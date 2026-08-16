@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+    name="viewport"
+    content="width=device-width,
+             initial-scale=1.0,
+             maximum-scale=1.0,
+             user-scalable=no">
+    <title>CCC Stationery</title>
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50">
+<!-- Banner -->
+<section class="banner">
+    <button class="banner-arrow banner-arrow-left" type="button" aria-label="Previous banner">
+        &lsaquo;
+    </button>
+    <div class="banner-track" id="banner-track">
+        <div class="banner-slide">
+            <img src="jpg/ACRYLIC MARKER.jpg" alt="Acrylic marker promotion">
+        </div>
+        <div class="banner-slide">
+            <img src="jpg/PINK BASKETBALL S5.jpg" alt="Basketball promotion">
+        </div>
+        <div class="banner-slide">
+            <img src="jpg/STEM MB.jpg" alt="STEM product promotion">
+        </div>
+    </div>
+    <button class="banner-arrow banner-arrow-right" type="button" aria-label="Next banner">
+        &rsaquo;
+    </button>
+</section>
+<!-- Header -->
+<header class="bg-white shadow">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+        <div class="flex items-center justify-between gap-3">
+            <div class="logo">
+                C<span class="logo-eye"><span class="logo-pupil"></span><span class="logo-lid"></span></span>C<span class="logo-eye"><span class="logo-pupil"></span><span class="logo-lid"></span></span> JAYA
+            </div>
+        </div>
+    </div>
+</header>
+<!-- Category -->
+<div class="max-w-7xl mx-auto px-4 py-4 category-wrapper">
+    <div class="flex flex-nowrap gap-2 overflow-x-auto whitespace-nowrap">
+        <button
+            id="cat-stationery"
+            onclick="filterCategory('stationery')"
+            class="category-btn">
+            Stationery
+        </button>
+        <button
+            id="cat-sports"
+            onclick="filterCategory('sports')"
+            class="category-btn">
+            Sports
+        </button>
+        <button
+            id="cat-art"
+            onclick="filterCategory('art')"
+            class="category-btn">
+            Art
+        </button>
+        <button
+            id="cat-music"
+            onclick="filterCategory('music')"
+            class="category-btn">
+            Music
+        </button>
+        <button
+            id="cat-stem"
+            onclick="filterCategory('stem')"
+            class="category-btn">
+            STEM
+        </button>
+        <button
+            id="cat-trophy-medal"
+            onclick="filterCategory('trophy-medal')"
+            class="category-btn">
+            Trophy
+        </button>
+        <button
+            id="cat-camping"
+            onclick="filterCategory('camping')"
+            class="category-btn">
+            Camping
+        </button>
+        <button
+            id="cat-printing"
+            onclick="filterCategory('printing')"
+            class="category-btn">
+            Printing
+        </button>    
+    </div>
+</div>
+<!-- Search -->
+<div class="search-wrapper">
+    <div class="relative">
+        <input
+            id="search-input"
+            type="text"
+            placeholder="Search Products..."
+            class="search-box">
+        <div
+            id="virtual-search-text"
+            class="virtual-search-text">
+        </div>
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+    </div>
+</div>
+<!-- Products -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        <section
+            id="home-wide-box"
+            class="home-wide-box">
+            <div class="home-promo-card has-light-sweep">
+                <img
+                    src="jpg/home-open.jpg"
+                    alt="COCO now open">
+            </div>
+            <div class="home-promo-card">
+                <img
+                    src="jpg/home-3d-services.jpg"
+                    alt="COCO 3D printing services">
+            </div>
+            <div class="home-promo-card">
+                <img
+                    src="jpg/home-sports.jpg"
+                    alt="COCO sports equipment">
+            </div>
+            <div class="home-promo-card">
+                <img
+                    src="jpg/home-art.jpg"
+                    alt="COCO art supplies">
+            </div>
+        </section>
+        <div
+            id="products-container"
+            class="products-grid">
+        </div>
+    </main>
+    <!-- Product Detail Modal -->
+    <div
+        id="product-detail-modal"
+        class="hidden modal-overlay">
+        <div class="detail-modal">
+            <div class="modal-header">
+                <h3 id="detail-name">
+                    Product Name
+                </h3>
+                <button onclick="closeDetail()">
+                    ×
+                </button>
+            </div>
+            <div class="detail-body">
+                <!-- Product Image -->
+                <div id="detail-image">
+                </div>
+                <div class="p-5">
+                    <!-- Description -->
+                    <p id="detail-desc">
+                        Product Description
+                    </p>
+                    <!-- Price -->
+                    <div
+                        id="detail-price"
+                        class="product-price"
+                        style="margin-top:15px;">
+                        RM 0.00
+                    </div>
+                    <!-- Color -->
+                    <div style="margin-top:20px;">
+                        <h4 class="font-semibold">
+                            Color
+                        </h4>
+                        <div
+                            id="color-options"
+                            class="flex flex-wrap gap-2 mt-2">
+                        </div>
+                    </div>
+                    <!-- Quantity -->
+                    <div class="detail-action-row">
+                        <div class="detail-qty-box">
+                            <h4 class="detail-quantity-label">
+                                Quantity
+                            </h4>
+                            <div
+                                class="flex items-center gap-3 mt-2">
+                                <button
+                                    onclick="changeDetailQty(-1)"
+                                    class="border px-3 py-1 rounded">
+                                    -
+                                </button>
+                                <span id="detail-qty">
+                                    1
+                                </span>
+                                <button
+                                    onclick="changeDetailQty(1)"
+                                    class="border px-3 py-1 rounded">
+                                    +
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Add To Cart -->
+                        <button
+                            class="add-cart-btn"
+                            aria-label="Add to cart"
+                            onclick="addCurrentToCart()">
+                            <i class="fa-solid fa-cart-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Poster Preview Modal -->
+    <div
+        id="poster-preview-modal"
+        class="hidden modal-overlay">
+        <div class="poster-preview-box">
+            <button
+                type="button"
+                class="poster-preview-close"
+                onclick="closePosterPreview()">
+                &times;
+            </button>
+            <img
+                id="poster-preview-image"
+                src=""
+                alt="Poster preview">
+        </div>
+    </div>
+    <!-- Shopping Cart Page -->
+    <section
+        id="cart-page"
+        class="hidden cart-page">
+        <div class="cart-modal">
+            <div class="modal-header">
+                <h3>
+                    Shopping Cart
+                </h3>
+                <button onclick="closeCart()">
+                    ×
+                </button>
+            </div>
+            <div
+                id="cart-items"
+                class="cart-body">
+            </div>
+            <div class="cart-footer">
+
+
+    <div class="total-row">
+        <span class="select-all-total">
+            <button
+                id="select-all-cart"
+                type="button"
+                class="select-all-btn"
+                onclick="toggleSelectAllCart()"
+                aria-label="Select all cart items">
+                <i class="fa-solid fa-check"></i>
+            </button>
+            Total
+        </span>
+        <span id="total-price">
+            RM 0.00
+        </span>
+    </div>
+
+
+    <div style="display:flex;gap:10px;margin-top:15px;">
+
+
+        <button
+            onclick="downloadPDF()"
+            class="add-cart-btn">
+            Download PDF
+        </button>
+
+
+        <button
+            onclick="copyCart()"
+            class="add-cart-btn">
+            Copy
+        </button>
+
+
+    </div>
+
+
+</div>
+        </div>
+    </section>
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button
+            type="button"
+            class="bottom-nav-item active"
+            onclick="goHome()">
+            <img
+                class="bottom-main-icon"
+                src="icon/main.png"
+                alt="Home">
+            <span>首页</span>
+        </button>
+        <a
+            class="bottom-nav-item"
+            href="https://www.facebook.com/profile.php?id=61591210336509"
+            target="_blank"
+            rel="noopener">
+            <img
+                class="bottom-fb-icon"
+                src="icon/facebook.png"
+                alt="Facebook">
+            <span>脸书</span>
+        </a>
+        <button
+            type="button"
+            class="bottom-nav-item bottom-cart-btn"
+            onclick="toggleCart()">
+            <span id="cart-count">
+                0
+            </span>
+            <img
+                class="bottom-cart-icon"
+                src="icon/cart.png"
+                alt="Cart">
+            <span>Cart</span>
+        </button>
+    </nav>
+    <!-- JS -->
+    <!-- JS --> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>      
+<script src="products.js"></script>
+<script src="cart.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
