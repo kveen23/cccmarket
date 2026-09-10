@@ -328,7 +328,20 @@ window.copyCart = function(){
     }
 
 
+    const quoteToField = document.getElementById("quote-to");
+    const addressField = document.getElementById("quote-address");
+    const contactField = document.getElementById("quote-contact");
+    const quoteTo = quoteToField ? quoteToField.value.trim() : "";
+    const address = addressField ? addressField.value.trim() : "";
+    const contact = contactField ? contactField.value.trim() : "";
     let text = "CCC Stationery Order\n\n";
+
+    if (quoteTo || address || contact) {
+        if (quoteTo) text += `Quote to: ${quoteTo}\n`;
+        if (address) text += `Address: ${address}\n`;
+        if (contact) text += `Contact: ${contact}\n`;
+        text += "\n";
+    }
 
 
     cart.forEach(item => {
@@ -363,80 +376,52 @@ window.copyCart = function(){
 // ======================
 // Download PDF
 // ======================
-window.downloadPDF = function(){
-
-
-    if(cart.length === 0){
-
-
-        alert("Cart Empty");
-
-
+let quotationExportInProgress = false;
+window.downloadPDF = async function () {
+    if (quotationExportInProgress) return;
+    const selectedItems = cart.filter(item => item.selected !== false);
+    if (!selectedItems.length) {
+        alert("Please select at least one cart item.");
         return;
-
-
     }
-
-
-    const { jsPDF } = window.jspdf;
-
-
-    const doc = new jsPDF();
-
-
-    doc.setFontSize(18);
-    doc.text(
-        "CCC Stationery Order",
-        20,
-        20
-    );
-
-
-    let y = 40;
-
-
-    cart.forEach(item => {
-
-
-        doc.setFontSize(12);
-
-
-        doc.text(
-            `${item.name} (${item.color || "Default"}) x${item.quantity}`,
-            20,
-            y
-        );
-
-
-        y += 10;
-
-
-    });
-
-
-    const total = cart.reduce(
-        (sum,item)=>
-        sum + item.price * item.quantity,
-        0
-    );
-
-
-    y += 10;
-
-
-    doc.setFontSize(14);
-
-
-    doc.text(
-        `Total: RM ${total.toFixed(2)}`,
-        20,
-        y
-    );
-
-
-    doc.save(
-        "CCC_Order.pdf"
-    );
-
-
+    if (!window.jspdf || !window.createQuotationPDF) {
+        alert("PDF export could not load. Please refresh the page and try again.");
+        return;
+    }
+    quotationExportInProgress = true;
+    const button = document.querySelector('[onclick="downloadPDF()"]');
+    if (button) button.disabled = true;
+    try {
+        // Web Locks prevent two tabs on this origin from reserving the same number.
+        if (!navigator.locks) {
+            throw new Error("This browser cannot safely allocate quotation numbers. Please use a current browser on HTTPS or localhost.");
+        }
+        await navigator.locks.request("cccmarket-quotation-number", async () => {
+            const key = "cccmarket.quotation.lastNumber.v1";
+            const stored = window.localStorage.getItem(key);
+            const last = stored === null ? 0 : Number(stored);
+            if (stored !== null && (!/^\d+$/.test(stored) || !Number.isSafeInteger(last) || last < 0)) {
+                throw new Error("The saved quotation counter is invalid. Please contact the administrator.");
+            }
+            const next = last + 1;
+            if (!Number.isSafeInteger(next)) throw new Error("The quotation counter has reached its limit.");
+            const quotationNumber = "CCC-QT" + String(next).padStart(5, "0");
+            const value = id => (document.getElementById(id)?.value || "").trim();
+            const doc = await window.createQuotationPDF(selectedItems, {
+                quoteTo: value("quote-to"),
+                address: value("quote-address"),
+                contact: value("quote-contact"),
+                quotationNumber
+            });
+            // Reserve before download; cancelled downloads can leave gaps, never reuse a number.
+            window.localStorage.setItem(key, String(next));
+            await doc.save(quotationNumber + ".pdf", { returnPromise: true });
+        });
+    } catch (error) {
+        console.error("Quotation export failed", error);
+        alert("Unable to export quotation: " + error.message);
+    } finally {
+        quotationExportInProgress = false;
+        if (button) button.disabled = false;
+    }
 };

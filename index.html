@@ -45,6 +45,16 @@
             <div class="logo">
                 C<span class="logo-eye"><span class="logo-pupil"></span><span class="logo-lid"></span></span>C<span class="logo-eye"><span class="logo-pupil"></span><span class="logo-lid"></span></span> JAYA
             </div>
+            <button
+                id="settings-trigger"
+                class="settings-trigger"
+                type="button"
+                aria-haspopup="dialog"
+                aria-controls="settings-login-modal"
+                onclick="openSettingsLogin()">
+                <i class="fa-solid fa-gear" aria-hidden="true"></i>
+                <span>Settings</span>
+            </button>
         </div>
     </div>
 </header>
@@ -244,12 +254,40 @@
         class="hidden cart-page">
         <div class="cart-modal">
             <div class="modal-header">
+                <button
+                    class="cart-back-button"
+                    type="button"
+                    onclick="closeCart()"
+                    aria-label="Back to catalogue">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                    <span>Back</span>
+                </button>
                 <h3>
                     Shopping Cart
                 </h3>
-                <button onclick="closeCart()">
+                <button class="cart-close-button" type="button" onclick="closeCart()" aria-label="Close cart">
                     ×
                 </button>
+            </div>
+            <div class="cart-quote-info">
+                <div class="cart-quote-heading">
+                    <strong>Quote details</strong>
+                    <span>Please mention if needed · Optional</span>
+                </div>
+                <div class="cart-quote-fields">
+                    <label>
+                        <span>Quote To</span>
+                        <input id="quote-to" type="text" autocomplete="name" placeholder="Customer or company name">
+                    </label>
+                    <label>
+                        <span>Address</span>
+                        <textarea id="quote-address" rows="2" autocomplete="street-address" placeholder="Billing or delivery address"></textarea>
+                    </label>
+                    <label>
+                        <span>Contact</span>
+                        <input id="quote-contact" type="text" autocomplete="tel" placeholder="Phone or email">
+                    </label>
+                </div>
             </div>
             <div
                 id="cart-items"
@@ -299,6 +337,165 @@
 </div>
         </div>
     </section>
+    <!-- Settings login -->
+    <div id="settings-login-modal" class="settings-overlay" role="dialog" aria-modal="true" aria-labelledby="settings-login-title" hidden>
+        <div class="settings-login-card">
+            <button class="settings-close-button" type="button" aria-label="Close settings login" onclick="closeSettingsLogin()">&times;</button>
+            <p class="settings-eyebrow">CCC JAYA ADMIN</p>
+            <h2 id="settings-login-title">Open Settings</h2>
+            <p class="settings-muted">Enter your account details to manage catalogue content and system users.</p>
+            <form id="settings-login-form" class="settings-form">
+                <label class="settings-field">
+                    <span>Username</span>
+                    <input id="settings-username" name="username" type="text" autocomplete="username" required>
+                </label>
+                <label class="settings-field">
+                    <span>Password</span>
+                    <input id="settings-password" name="password" type="password" autocomplete="current-password" required>
+                </label>
+                <p id="settings-login-error" class="settings-form-error" role="alert" hidden></p>
+                <p class="settings-security-note"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Local preview gate only. Secure sign-in requires a server or auth provider.</p>
+                <button class="settings-primary-button" type="submit">Continue to Settings</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Settings workspace -->
+    <section id="settings-page" class="settings-page" aria-labelledby="settings-page-title" hidden>
+        <div class="settings-shell">
+            <div class="settings-page-header">
+                <div>
+                    <p class="settings-eyebrow">ADMIN WORKSPACE</p>
+                    <h2 id="settings-page-title">Settings</h2>
+                    <p class="settings-muted">Keep catalogue details consistent with the dashboard categories.</p>
+                </div>
+                <button class="settings-secondary-button" type="button" onclick="closeSettingsPage()" aria-label="Back to catalogue"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back</button>
+            </div>
+
+            <div class="settings-choice-grid" aria-label="Settings functions">
+                <button class="settings-choice-button" type="button" onclick="openSettingsFunction('catalogue')">
+                    <span class="settings-choice-icon"><i class="fa-solid fa-box-open" aria-hidden="true"></i></span>
+                    <span><strong>Catalogue Management</strong><small>Create, edit, and organise catalogue items.</small></span>
+                    <i class="fa-solid fa-arrow-up-right-from-square settings-choice-arrow" aria-hidden="true"></i>
+                </button>
+                <button class="settings-choice-button" type="button" onclick="openSettingsFunction('users')">
+                    <span class="settings-choice-icon"><i class="fa-solid fa-users" aria-hidden="true"></i></span>
+                    <span><strong>System User Management</strong><small>Review administrator access and user records.</small></span>
+                    <i class="fa-solid fa-arrow-up-right-from-square settings-choice-arrow" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <div class="settings-layout">
+                <aside class="settings-sidebar" aria-label="Settings sections">
+                    <button class="settings-nav-button active" type="button" data-settings-panel="catalogue" onclick="showSettingsPanel('catalogue')"><i class="fa-solid fa-box-open" aria-hidden="true"></i> Catalogue Management</button>
+                    <button class="settings-nav-button" type="button" data-settings-panel="users" onclick="showSettingsPanel('users')"><i class="fa-solid fa-users" aria-hidden="true"></i> System User Management</button>
+                    <p class="settings-sidebar-note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Changes are saved in this browser for preview.</p>
+                </aside>
+
+                <div class="settings-content">
+                    <section id="settings-panel-catalogue" class="settings-panel" data-settings-panel-content="catalogue">
+                        <div class="settings-panel-heading">
+                            <div>
+                                <p class="settings-eyebrow">CATALOGUE</p>
+                                <h3>Create or edit an item</h3>
+                            </div>
+                            <span class="settings-status-pill">Draft mode</span>
+                        </div>
+                        <form id="catalogue-item-form" class="settings-form">
+                            <label class="settings-field settings-field-wide">
+                                <span>Load existing item</span>
+                                <select id="catalogue-existing-item" name="existingItem">
+                                    <option value="">Create new item</option>
+                                </select>
+                                <span class="settings-helper">Choose an item to edit, or leave this as Create new item.</span>
+                            </label>
+                            <div class="settings-form-grid">
+                                <label class="settings-field">
+                                    <span>Item name <strong>*</strong></span>
+                                    <input id="catalogue-item-name" name="itemName" type="text" required placeholder="e.g. Premium Drawing Pad">
+                                </label>
+                                <label class="settings-field">
+                                    <span>UOM <strong>*</strong></span>
+                                    <input id="catalogue-item-uom" name="uom" type="text" required placeholder="e.g. unit, pack, box">
+                                </label>
+                                <label class="settings-field">
+                                    <span>Price <strong>*</strong></span>
+                                    <input id="catalogue-item-price" name="price" type="text" required placeholder="e.g. RM 12.90">
+                                </label>
+                                <label class="settings-field settings-field-wide">
+                                    <span>Description</span>
+                                    <textarea id="catalogue-item-description" name="description" rows="4" placeholder="Describe the item for customers"></textarea>
+                                </label>
+                            </div>
+
+                            <fieldset class="settings-choice-group">
+                                <legend>Category <strong>*</strong></legend>
+                                <p class="settings-helper">Choose one or more categories from the dashboard menu.</p>
+                                <div class="settings-checkbox-grid">
+                                    <label><input type="checkbox" name="category" value="stationery"> Stationery</label>
+                                    <label><input type="checkbox" name="category" value="sports"> Sports</label>
+                                    <label><input type="checkbox" name="category" value="art"> Art</label>
+                                    <label><input type="checkbox" name="category" value="music"> Music</label>
+                                    <label><input type="checkbox" name="category" value="stem"> STEM</label>
+                                    <label><input type="checkbox" name="category" value="trophy-medal"> Trophy</label>
+                                    <label><input type="checkbox" name="category" value="camping"> Camping</label>
+                                    <label><input type="checkbox" name="category" value="printing"> Printing</label>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="settings-choice-group">
+                                <legend>Colour selection</legend>
+                                <p class="settings-helper">Select existing colours or create a new selection.</p>
+                                <div id="catalogue-colour-list" class="settings-chip-list">
+                                    <label class="settings-chip"><input type="checkbox" name="colour" value="black"> Black</label>
+                                    <label class="settings-chip"><input type="checkbox" name="colour" value="blue"> Blue</label>
+                                    <label class="settings-chip"><input type="checkbox" name="colour" value="green"> Green</label>
+                                    <label class="settings-chip"><input type="checkbox" name="colour" value="red"> Red</label>
+                                    <label class="settings-chip"><input type="checkbox" name="colour" value="yellow"> Yellow</label>
+                                </div>
+                                <div class="settings-inline-input">
+                                    <input id="catalogue-new-colour" type="text" placeholder="New colour name" aria-label="New colour name">
+                                    <button class="settings-secondary-button" type="button" onclick="addCatalogueColour()">Add colour</button>
+                                </div>
+                            </fieldset>
+
+                            <label class="settings-field">
+                                <span>Upload image</span>
+                                <input id="catalogue-item-image" name="image" type="file" accept="image/*">
+                                <span class="settings-helper">Preview only in this static browser build.</span>
+                            </label>
+                            <div id="catalogue-image-preview" class="settings-image-preview" aria-live="polite">No image selected</div>
+
+                            <div class="settings-form-actions">
+                                <button class="settings-secondary-button" type="button" onclick="resetCatalogueForm()">Clear</button>
+                                <button class="settings-primary-button" type="submit">Save catalogue draft</button>
+                            </div>
+                            <p id="catalogue-form-status" class="settings-form-status" role="status" hidden></p>
+                        </form>
+                    </section>
+
+                    <section id="settings-panel-users" class="settings-panel" data-settings-panel-content="users" hidden>
+                        <div class="settings-panel-heading">
+                            <div>
+                                <p class="settings-eyebrow">ACCESS</p>
+                                <h3>System User Management</h3>
+                            </div>
+                            <span class="settings-status-pill">Local preview</span>
+                        </div>
+                        <div class="settings-info-banner"><i class="fa-solid fa-lock" aria-hidden="true"></i><span id="user-management-notice">User records and passwords need a backend or auth provider before they can be managed securely.</span></div>
+                        <div class="settings-user-table-wrap">
+                            <table class="settings-user-table">
+                                <thead><tr><th>Username</th><th>Role</th><th>Status</th></tr></thead>
+                                <tbody><tr><td id="settings-current-username">Current admin</td><td>Administrator</td><td><span class="settings-user-status">Signed in locally</span></td></tr></tbody>
+                            </table>
+                        </div>
+                        <button class="settings-secondary-button" type="button" onclick="showUserManagementNotice()"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> Add system user</button>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <button
@@ -338,9 +535,11 @@
     </nav>
     <!-- JS -->
     <!-- JS --> 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>      
+<script src="vendor/jspdf.umd.min.js"></script>
 <script src="products.js"></script>
+<script src="quotation.js"></script>
 <script src="cart.js"></script>
 <script src="app.js"></script>
+<script src="settings.js"></script>
 </body>
 </html>
